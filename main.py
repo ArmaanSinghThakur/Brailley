@@ -1,24 +1,11 @@
-import pyttsx3 as pyttsx
-from comtypes.tools.tlbparser import void_type
 from vosk import Model, KaldiRecognizer
 import pyaudio
 import json
 from Scan_Function import Scan
 
-import numpy as np
-from pyzbar.pyzbar import decode
-
-from operator import index
-from shutil import which
-from tabnanny import check
-import prettytable as pt
 import pymysql as msc
-import pandas as pd
-from pandas.core.computation.expressions import where
 import numpy as np
 import pyttsx3 as pyttsx
-import Scan_Function
-from win32cryptcon import szOID_INFOSEC_mosaicKeyManagement
 
 speak= pyttsx.init()
 
