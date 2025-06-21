@@ -210,6 +210,9 @@ while True:
             if recognizer.AcceptWaveform(buffered_audio):
                 result = json.loads(recognizer.Result())
                 new_command = result.get("text", "").lower()
+
+
+
                 if new_command:
                     print("Command:", new_command)
                     handle_command(new_command)
