@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Brailley.iml" filepath="$PROJECT_DIR$/.idea/Brailley.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Brailley.iml" filepath="$PROJECT_DIR$/Brailley.iml" />
     </modules>
   </component>
 </project>
