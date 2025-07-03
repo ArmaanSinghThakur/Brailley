@@ -1,5 +1,8 @@
 import com.sun.speech.freetts.*;
 
+import java.io.File;
+import java.util.Scanner;
+
 public class speech {
     static Voice voice;
 
@@ -26,8 +29,32 @@ public class speech {
     }
 
     public static String readCurrentLocationFromFile() {
-        try (java.util.Scanner s = new java.util.Scanner(new java.io.File("current_location.txt"))) {
+        try (Scanner s = new Scanner(new File("current_location.txt"))) {
             return s.hasNextLine() ? s.nextLine().trim() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static double[] readGPSLocationFromFile() {
+        try (Scanner sc = new Scanner(new File("current_gps.txt"))) {
+            if (sc.hasNextLine()) {
+                String[] parts = sc.nextLine().trim().split(",");
+                return new double[]{
+                        Double.parseDouble(parts[0]), Double.parseDouble(parts[1])
+                };
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static double[] readGPSFromFile() {
+        try (Scanner sc = new Scanner(new File("gps_coordinates.txt"))) {
+            double lat = sc.nextDouble();
+            double lon = sc.nextDouble();
+            return new double[]{lat, lon};
         } catch (Exception e) {
             return null;
         }

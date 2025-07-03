@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -13,12 +14,12 @@ public class store_navigation {
 
         layout store = new layout();
 
-        store.addsection("Entrance");
-        store.addsection("Grocery");
-        store.addsection("Dairy");
-        store.addsection("Cosmetics");
-        store.addsection("Pharmacy");
-        store.addsection("Clothing");
+        store.addsection("Entrance", 12.000, 12.000);
+        store.addsection("Grocery",  12.005, 12.010);
+        store.addsection("Dairy",    12.008, 12.014);
+        store.addsection("Cosmetics",12.006, 12.007);
+        store.addsection("Pharmacy", 12.012, 12.010);
+        store.addsection("Clothing", 12.015, 12.015);
 
         store.adddistance("Entrance", "Grocery", 7);
         store.adddistance("Entrance", "Dairy", 5);
@@ -49,7 +50,6 @@ public class store_navigation {
                 new Connection("Pharmacy", "left", 4)
         ));
 
-        // Find shortest path and speak it
         var path = store.findshortestpath("Entrance", destination);
         if (!path.isEmpty()) {
             System.out.println("Path: " + String.join(" -> ", path));
@@ -62,7 +62,6 @@ public class store_navigation {
             System.out.println("No path found.");
         }
 
-        // Live tracking
         LiveTracker tracker = new LiveTracker(store, "Entrance");
         System.out.println("Smart stick is on work.");
         System.out.println("Current Location: " + tracker.getCurrentlocation());
@@ -91,12 +90,24 @@ public class store_navigation {
             }
         }
 
-        // tacking loop
+        // Start tracking using GPS
+        System.out.println("\nSwitching to GPS tracking...\n");
         String previousLocation = "";
 
         while (true) {
-            String current = Speech.readCurrentLocationFromFile();
-            if (current != null && !current.equals(previousLocation)) {
+            double[] gps = readGPSFromFile();
+            if (gps == null) {
+                System.out.println("Failed to read GPS coordinates.");
+                continue;
+            }
+
+            String current = store.mapCoordinatesToSection(gps[0], gps[1]);
+            if (current == null) {
+                System.out.println("No section mapped to GPS location.");
+                continue;
+            }
+
+            if (!current.equals(previousLocation)) {
                 previousLocation = current;
 
                 List<String> newPath = store.findshortestpath(current, destination);
@@ -111,7 +122,7 @@ public class store_navigation {
             }
 
             try {
-                Thread.sleep(3000); // check location every 3 seconds
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -159,6 +170,16 @@ public class store_navigation {
             }
 
             writeCurrentLocationToFile(to);
+        }
+    }
+
+    public static double[] readGPSFromFile() {
+        try (Scanner s = new Scanner(new File("gps_coordinates.txt"))) {
+            double lat = s.nextDouble();
+            double lon = s.nextDouble();
+            return new double[] { lat, lon };
+        } catch (Exception e) {
+            return null;
         }
     }
 }

@@ -1,10 +1,10 @@
 import java.util.*;
 
 public class layout {
-    Map<String, section> area = new HashMap<>();
+    private final Map<String, section> area = new HashMap<>();
 
-    public void addsection(String nameofsection) {
-        area.putIfAbsent(nameofsection, new section(nameofsection));
+    public void addsection(String nameofsection, double lat, double lon) {
+        area.putIfAbsent(nameofsection, new section(nameofsection, lat, lon));
     }
 
     public void adddistance(String from, String destination, int steps) {
@@ -106,6 +106,24 @@ public class layout {
         }
 
         return instructions.toString();
+    }
+
+    public String mapCoordinatesToSection(double lat, double lon) {
+        double minDistance = Double.MAX_VALUE;
+        String nearestSection = null;
+
+        for (section s : area.values()) {
+            double dist = Math.sqrt(Math.pow(s.latitude - lat, 2) + Math.pow(s.longitude - lon, 2));
+            if (dist < minDistance) {
+                minDistance = dist;
+                nearestSection = s.nameofsection;
+            }
+        }
+        return nearestSection;
+    }
+
+    public Map<String, section> getSections() {
+        return area;
     }
 }
 
