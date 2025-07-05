@@ -1,3 +1,5 @@
+from time import sleep
+
 import pyttsx3 as pyttsx
 from comtypes.tools.tlbparser import void_type
 from vosk import Model, KaldiRecognizer
@@ -7,7 +9,7 @@ from Scan_Function import Scan
 import time
 import numpy as np
 from pyzbar.pyzbar import decode
-
+from navigate import *
 from operator import index
 from shutil import which
 from tabnanny import check
@@ -18,8 +20,8 @@ from pandas.core.computation.expressions import where
 import numpy as np
 import pyttsx3 as pyttsx
 import Scan_Function
-from win32cryptcon import szOID_INFOSEC_mosaicKeyManagement
 
+import threading
 speak= pyttsx.init()
 
 mydb = msc.connect(
@@ -102,6 +104,9 @@ def say(text):
     print("Assistant:", text)
     speak.say(text)
     speak.runAndWait()
+
+
+
 def product_details(text):
 
     for i in range(0, len(text)):
@@ -136,6 +141,36 @@ def product_details(text):
                 say(text[i])
         else:
             say(text[i])
+
+
+def navigation():
+    print("Destination: ")
+    time.sleep(2)
+    # Recognize extended input
+    start_time = time.time()
+    buffered_audio = b""
+    while time.time() - start_time < 5:
+        data = stream.read(4096, exception_on_overflow=False)
+        buffered_audio += data
+    # Recognize extended input
+    if recognizer.AcceptWaveform(buffered_audio):
+        result = json.loads(recognizer.Result())
+        command = result.get("text", "").lower()
+        print("Command: ", command)
+        if command:
+            print("Command:", command)
+            if any(word in command for word in ["groceries", "grocery", "grocires"]):
+                say("taking you to Groceries")
+                selected= "groceries"
+                selected_range = check_section(selected)
+                say(f" Navigating to: Groceries (Line Color: {selected_range['color']})")
+                navigate(selected_range, False, selected)
+            else:
+                say("section not found")
+        else:
+            say("i cant do that")
+    else:
+        print("command not registered")
 def handle_command(command):
     command = command.lower()
     if "skip" in command:
@@ -169,6 +204,12 @@ def handle_command(command):
 
         else:
             say("No Product Found")
+
+    elif any(word in command for word in ["navi", "navigate", "navigation", "navigated", "navigates"]):
+        say("Where do you wanna go? ")
+        navigation()
+
+
 
     elif "your name" in command:
         say("I am your assistant. You can call me Assistant.")
