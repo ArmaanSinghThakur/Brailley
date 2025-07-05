@@ -2,24 +2,44 @@ import java.util.*;
 
 public class temp_1 {
     public static void greet(String wel) {
-        System.out.println("Welcome, " + wel);
+        System.out.println("welcome, " + wel);
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int steps = sc.nextInt();
-        sc.nextLine(); // consume the leftover newline
+       greet("walmart visiter");
 
-        String section = sc.nextLine();
-        greet("Walmart visitor");
-        System.out.println("Walk " + steps + " steps to reach the " + section + " section.");
+        layout layoutMap = new layout();
+       navigator nav = new navigator(layoutMap);
 
-        String current = speech.readCurrentLocationFromFile();
+       double[] gps = speech.readGPSLocationFromFile();
+       if (gps == null) {
+           System.out.println("unable to find path: ");
+           return;
+       }
 
-        System.out.print("Enter destination section: ");
-        String desti = sc.nextLine();
+       section current = nav.getNearestSection(gps[0], gps[1]);
+        System.out.println("you are closest to: " + current.nameofsection);
 
-        speech.speak("Navigating from " + current + " to " + desti);
+        System.out.println("enter your destination: ");
+        String destName = sc.nextLine().trim();
+
+        section destination = layoutMap.getSectionByName(destName);
+        if (destination == null) {
+            System.out.println("unknown desination.");
+            return;
+        }
+
+        List<section> path = nav.findPath(current, destination);
+        if (path.isEmpty()) {
+            System.out.println("no path found.");
+        }
+        else {
+            for (section s : path) {
+                System.out.println("walk to " + s.nameofsection);
+                speech.speak("walk to " + s.nameofsection);
+            }
+        }
     }
 }
 

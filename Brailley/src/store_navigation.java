@@ -9,17 +9,20 @@ public class store_navigation {
         Scanner sc = new Scanner(System.in);
         speech Speech = new speech();
 
-        System.out.print("Please enter your destination: ");
-        String destination = sc.nextLine();
-
         layout store = new layout();
 
-        store.addsection("Entrance", 12.000, 12.000);
-        store.addsection("Grocery",  12.005, 12.010);
-        store.addsection("Dairy",    12.008, 12.014);
-        store.addsection("Cosmetics",12.006, 12.007);
-        store.addsection("Pharmacy", 12.012, 12.010);
-        store.addsection("Clothing", 12.015, 12.015);
+        store.addsection("Entrance", 23.232690574985387,77.43031939481776);
+        store.addsection("Grocery",  23.23259914588621, 77.43018134951647); //World of Titan
+        store.addsection("Dairy",    23.23272298279288, 77.43013270656009); //Sephora
+        store.addsection("Cosmetics",23.232548585222627,77.43009841726297); //Punjab Jewellers
+        store.addsection("Pharmacy", 23.23244677569446, 77.42998519020539); //Tanishq
+        store.addsection("Clothing", 23.232754864626784, 77.42986784356071); //Calvin Klein
+
+        double[] gps = Speech.readGPSLocationFromFile();
+        if (gps == null) {
+            System.out.println("no coordinates found");
+            return;
+        }
 
         store.adddistance("Entrance", "Grocery", 7);
         store.adddistance("Entrance", "Dairy", 5);
@@ -50,16 +53,28 @@ public class store_navigation {
                 new Connection("Pharmacy", "left", 4)
         ));
 
-        var path = store.findshortestpath("Entrance", destination);
+        // nearest section
+        String currentSection = store.mapCoordinatesToSection(gps[0], gps[1]);
+        System.out.println("starting near: " + currentSection);
+        speech.speak("starting near: " + currentSection);
+
+        //asking user their destination
+        System.out.println("please tell me your destination: ");
+        String destination = sc.nextLine().trim();
+
+        // finding path
+        var path = store.findshortestpath(currentSection, destination);
         if (!path.isEmpty()) {
             System.out.println("Path: " + String.join(" -> ", path));
-            String voiceGuide = store.voice(path);
-            System.out.println("\nVoice Instructions:\n" + voiceGuide);
-            Speech.speak(voiceGuide);
-
-            simulateWalking(path, storeMap, Speech, sc);
+            for (String next : path) {
+              String instr = "walk to: " + next;
+                System.out.println(instr);
+                speech.speak(instr);
+                writeCurrentLocationToFile(next);
+                waitForGPSChange(next);
+            }
         } else {
-            System.out.println("No path found.");
+            System.out.println("no valid path is found.");
         }
 
         LiveTracker tracker = new LiveTracker(store, "Entrance");
@@ -129,6 +144,23 @@ public class store_navigation {
         }
     }
 
+    public static void waitForGPSChange(String targetSection) {
+        try {
+            Thread.sleep(3);
+        }
+        catch (InterruptedException e) {
+        }
+    }
+
+    public static void writeCurrentLocationToFile(String location) {
+        try (FileWriter writer = new FileWriter("current_location.txt")){
+            writer.write(location);
+        }
+        catch (IOException e) {
+            System.out.println("failed to write location");
+        }
+    }
+
     public static Connection getConnection(String from, String to, Map<String, List<Connection>> storeMap) {
         List<Connection> connections = storeMap.get(from);
         if (connections != null) {
@@ -137,14 +169,6 @@ public class store_navigation {
             }
         }
         return null;
-    }
-
-    public static void writeCurrentLocationToFile(String location) {
-        try (FileWriter writer = new FileWriter("current_location.txt")) {
-            writer.write(location);
-        } catch (IOException e) {
-            System.out.println("failed to write location");
-        }
     }
 
     public static void simulateWalking(List<String> path, Map<String, List<Connection>> storeMap,

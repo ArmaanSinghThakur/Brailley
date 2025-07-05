@@ -18,9 +18,4 @@ public class section {
     public void adddistance(section destination, int steps) {
         listofpaths.add(new distance(destination, steps));
     }
-
-    @Override
-    public String toString() {
-        return nameofsection + " (" + latitude + ", " + longitude + ")";
-    }
 }
