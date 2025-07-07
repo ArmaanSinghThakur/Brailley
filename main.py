@@ -8,19 +8,13 @@ import json
 from Scan_Function import Scan
 import time
 import numpy as np
-from pyzbar.pyzbar import decode
 from navigate import *
-from operator import index
-from shutil import which
-from tabnanny import check
-import prettytable as pt
 import pymysql as msc
 import pandas as pd
-from pandas.core.computation.expressions import where
 import numpy as np
 import pyttsx3 as pyttsx
 import Scan_Function
-
+from alert import *
 import threading
 speak= pyttsx.init()
 
@@ -201,7 +195,7 @@ def handle_command(command):
     if "skip" in command:
         skip()
 
-    if any(word in command for word in ["hello", "hi", "hey"]):
+    elif any(word in command for word in ["hello", "hi", "hey"]):
         say("Hello! How can I assist you today?")
 
     elif any(word in command for word in ["scan", "scan the product", "product", "scan the build up"]):
@@ -226,7 +220,10 @@ def handle_command(command):
                     f"Rate after discount: {rate - (rate * dis / 100)} rupees"]
             product_details(text)
 
-
+        elif any(word in command for word in ["help", "helped", "helps"]):
+            message= alert()
+            time.sleep(1)
+            say(message)
         else:
             say("No Product Found")
 

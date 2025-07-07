@@ -2,8 +2,8 @@ import requests
 from geopy.distance import geodesic
 
 
-BOT_TOKEN = ""
-CHAT_ID = ""  
+BOT_TOKEN = "7633233132:AAHlT4rx0KzGhhDVoW7F8CA78g4T-jmHxUg"
+CHAT_ID = "7700735121"
 
 def send_telegram_alert(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -26,7 +26,7 @@ def find_nearest_security(location, team):
 
 voice_triggered = True
 
-if voice_triggered:
+def alert():
     name, sec_loc = find_nearest_security(current_location, security_team)
     message = (
         f"🚨 *Emergency Alert!*\n"
@@ -36,5 +36,7 @@ if voice_triggered:
     print(f"Sending alert to Telegram for {name}...")
     response = send_telegram_alert(message)
     print("Telegram Response:", response)
-else:
-    print("No alert triggered.")
+    return message
+
+
+alert()
