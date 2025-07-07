@@ -2,8 +2,8 @@ import requests
 from geopy.distance import geodesic
 
 
-BOT_TOKEN = "7633233132:AAHlT4rx0KzGhhDVoW7F8CA78g4T-jmHxUg"
-CHAT_ID = "7700735121"
+BOT_TOKEN = ""
+CHAT_ID = ""
 
 def send_telegram_alert(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
