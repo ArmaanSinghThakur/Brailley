@@ -1,5 +1,6 @@
 import java.util.*;
 
+
 public class navigator {
     layout layoutMap;
 
@@ -11,7 +12,7 @@ public class navigator {
         section nearest = null;
         double minDist = Double.MAX_VALUE;
 
-        for (section s : layoutMap.map.values()) {
+        for (section s : layoutMap.getMap().values()) {
             double d = distance(userLat, userLon, s.latitude, s.longitude);
             if (d < minDist) {
                 minDist = d;

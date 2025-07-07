@@ -15,8 +15,14 @@ public class store_navigation {
         store.addsection("Grocery",  23.23259914588621, 77.43018134951647); //World of Titan
         store.addsection("Dairy",    23.23272298279288, 77.43013270656009); //Sephora
         store.addsection("Cosmetics",23.232548585222627,77.43009841726297); //Punjab Jewellers
+        store.addsection("A",        23.232632039934174,77.43008918320588); // midpoint
+        store.addsection("B",        23.232701051820214,77.43005163227951); // midpoint
+        store.addsection("C",        23.23272019882376, 77.4299712114929);  // midpoint
+        store.addsection("D",        23.232699864971096,77.42990750902858); // midpoint
+        store.addsection("E",        23.23251522714504, 77.43004678420789); // midpoint
+        store.addsection("F",        23.232494277082807,77.4299696706984);  // midpoint
         store.addsection("Pharmacy", 23.23244677569446, 77.42998519020539); //Tanishq
-        store.addsection("Clothing", 23.232754864626784, 77.42986784356071); //Calvin Klein
+        store.addsection("Clothing", 23.232754864626784,77.42986784356071); //Calvin Klein
 
         double[] gps = Speech.readGPSLocationFromFile();
         if (gps == null) {
@@ -32,7 +38,18 @@ public class store_navigation {
         store.adddistance("Cosmetics", "Dairy", 4);
         store.adddistance("Cosmetics", "Clothing", 3);
         store.adddistance("Clothing", "Pharmacy", 4);
+        store.adddistance("Grocery", "Cosmetics", 2);
+        store.adddistance("Dairy", "B", 2);
+        store.adddistance("Cosmetics", "A", 1);
+        store.adddistance("A", "B", 1);
+        store.adddistance("B", "C", 1);
+        store.adddistance("C", "D", 1);
+        store.adddistance("D", "Clothing", 1);
+        store.adddistance("Cosmetics", "Pharmacy", 3);
+        store.adddistance("A", "Pharmacy", 1);
 
+
+        System.out.println("🗺️  Mall Map Layout:");
         store.printMap();
 
         Map<String, List<Connection>> storeMap = new HashMap<>();
@@ -62,7 +79,6 @@ public class store_navigation {
         System.out.println("please tell me your destination: ");
         String destination = sc.nextLine().trim();
 
-        // finding path
         var path = store.findshortestpath(currentSection, destination);
         if (!path.isEmpty()) {
             System.out.println("Path: " + String.join(" -> ", path));
@@ -110,7 +126,7 @@ public class store_navigation {
         String previousLocation = "";
 
         while (true) {
-            double[] gps = readGPSFromFile();
+            gps = readGPSFromFile();
             if (gps == null) {
                 System.out.println("Failed to read GPS coordinates.");
                 continue;
@@ -146,7 +162,7 @@ public class store_navigation {
 
     public static void waitForGPSChange(String targetSection) {
         try {
-            Thread.sleep(3);
+            Thread.sleep(3000);
         }
         catch (InterruptedException e) {
         }

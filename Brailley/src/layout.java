@@ -3,6 +3,15 @@ import java.util.*;
 public class layout {
     private final Map<String, section> area = new HashMap<>();
 
+    public Map<String, section> getMap() {
+        return area;
+    }
+
+    public section getSectionByName(String name) {
+        return area.get(name);
+    }
+
+
     public void addsection(String nameofsection, double lat, double lon) {
         area.putIfAbsent(nameofsection, new section(nameofsection, lat, lon));
     }
@@ -84,6 +93,7 @@ public class layout {
         instructions.append("Start from ").append(path.get(0)).append(". ");
 
         for (int i = 1; i < path.size(); i++) {
+            if (path.get(i).matches("[ABCD]")) continue;
             String from = path.get(i - 1);
             String destination = path.get(i);
             section fromsection = area.get(from);
