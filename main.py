@@ -165,12 +165,37 @@ def navigation():
                 selected_range = check_section(selected)
                 say(f" Navigating to: Groceries (Line Color: {selected_range['color']})")
                 navigate(selected_range, False, selected)
+
+            elif any(word in command for word in ["pharmacy", "pharm", "pharma", "farm"]):
+                say("taking you to Pharmacy")
+                selected = "pharmacy"
+                selected_range = check_section(selected)
+                say(f" Navigating to: Pharmacy (Line Color: {selected_range['color']})")
+                navigate(selected_range, False, selected)
+
+            elif any(word in command for word in ["bakery", "baker", "bread", "cake", "biscuit", "cookie", "cookies"]):
+                say("taking you to Bakery")
+                selected = "bakery"
+                selected_range = check_section(selected)
+                say(f" Navigating to: Bakery (Line Color: {selected_range['color']})")
+                navigate(selected_range, False, selected)
+
+            elif any(word in command for word in ["checkout", "check", "counter", "reception"]):
+                say("taking you to Checkout")
+                selected = "checkout"
+                selected_range = check_section(selected)
+                say(f" Navigating to: Checkout (Line Color: {selected_range['color']})")
+                navigate(selected_range, False, selected)
+
             else:
                 say("section not found")
         else:
             say("i cant do that")
     else:
         print("command not registered")
+
+
+
 def handle_command(command):
     command = command.lower()
     if "skip" in command:
